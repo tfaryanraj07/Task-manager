@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
+
 const connectDB = require('./config/db');
 
 
@@ -12,13 +12,15 @@ const app = express();
 
 connectDB();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    origin: "https://vercel.com/raj-solankis-projects/task-manager/bc6rtrvwCCWXYxEio2tzgtaj6Je9",
-    credentials: true,
-  })
-);
+const cors = require("cors");
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://task-manager-phi-indol-17.vercel.app"
+  ],
+  credentials: true
+}));
 
 app.use(express.json());
 

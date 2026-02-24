@@ -15,7 +15,7 @@ connectDB();
 app.use(
   cors({
     origin: "http://localhost:5173",
-    origin: "https://your-frontend-url.vercel.app",
+    origin: "https://vercel.com/raj-solankis-projects/task-manager/bc6rtrvwCCWXYxEio2tzgtaj6Je9",
     credentials: true,
   })
 );

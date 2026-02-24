@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+
 const authRoutes = require('./routes/authRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const userRoutes = require('./routes/userRoutes'); // ✅ added
@@ -14,6 +15,7 @@ connectDB();
 app.use(
   cors({
     origin: "http://localhost:5173",
+    origin: "https://your-frontend-url.vercel.app",
     credentials: true,
   })
 );

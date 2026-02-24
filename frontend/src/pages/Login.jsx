@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API = import.meta.env.VITE_API_URL;
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,14 +16,13 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${API}/api/auth/login`,
         { email, password }
       );
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
 
-      // Redirect based on role
       if (res.data.role === "admin") {
         navigate("/admin");
       } else {
@@ -30,6 +31,7 @@ function Login() {
 
     } catch (error) {
       alert("Login failed. Please check your credentials.");
+      console.error("Login error:", error);
     }
   };
 
@@ -40,7 +42,6 @@ function Login() {
           Task Management System
         </h2>
 
-        {/* Role Toggle */}
         <div style={styles.roleSwitch}>
           <button
             type="button"
@@ -58,7 +59,6 @@ function Login() {
           </button>
         </div>
 
-        {/* Login Form */}
         <form onSubmit={handleLogin} style={styles.form}>
           <input
             type="email"
@@ -82,7 +82,6 @@ function Login() {
             Login as {selectedRole}
           </button>
 
-          {/* Register Link (Only for Employee) */}
           {selectedRole === "employee" && (
             <p style={styles.registerText}>
               New Employee?{" "}

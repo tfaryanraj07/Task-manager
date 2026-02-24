@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
+const API = import.meta.env.VITE_API_URL;
+
 function AdminDashboard() {
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
@@ -22,7 +24,7 @@ function AdminDashboard() {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/tasks", {
+      const res = await axios.get(`${API}/api/tasks`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(res.data);
@@ -33,7 +35,7 @@ function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users", {
+      const res = await axios.get(`${API}/api/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);
@@ -46,13 +48,12 @@ function AdminDashboard() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/tasks", form, {
+      await axios.post(`${API}/api/tasks`, form, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       fetchTasks();
 
-      // Reset form
       setForm({
         title: "",
         description: "",
@@ -68,7 +69,7 @@ function AdminDashboard() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+      await axios.delete(`${API}/api/tasks/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -89,7 +90,6 @@ function AdminDashboard() {
 
         <h1>Admin Dashboard</h1>
 
-        {/* Statistics Card */}
         <div className="card">
           <h3>Statistics</h3>
           <p>Total Tasks: {totalTasks}</p>
@@ -98,7 +98,6 @@ function AdminDashboard() {
           <p>Total Users: {users.length}</p>
         </div>
 
-        {/* Create Task Card */}
         <div className="card">
           <h3>Create Task</h3>
 
@@ -153,7 +152,6 @@ function AdminDashboard() {
           </form>
         </div>
 
-        {/* All Tasks */}
         <h3>All Tasks</h3>
 
         {tasks.map(task => (

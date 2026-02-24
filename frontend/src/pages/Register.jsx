@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API = import.meta.env.VITE_API_URL;
+
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,7 +15,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register", {
+      await axios.post(`${API}/api/auth/register`, {
         name,
         email,
         password,
@@ -24,6 +26,7 @@ function Register() {
       navigate("/");
     } catch (error) {
       alert("Registration failed");
+      console.error("Register error:", error);
     }
   };
 
@@ -35,6 +38,7 @@ function Register() {
         <form onSubmit={handleRegister} style={styles.form}>
           <input
             placeholder="Full Name"
+            value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
@@ -42,6 +46,7 @@ function Register() {
           <input
             type="email"
             placeholder="Email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -49,6 +54,7 @@ function Register() {
           <input
             type="password"
             placeholder="Password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />

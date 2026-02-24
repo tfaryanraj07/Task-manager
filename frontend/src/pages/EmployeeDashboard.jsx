@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
+const API = import.meta.env.VITE_API_URL;
+
 function EmployeeDashboard() {
   const [tasks, setTasks] = useState([]);
   const token = localStorage.getItem("token");
@@ -11,21 +13,30 @@ function EmployeeDashboard() {
   }, []);
 
   const fetchTasks = async () => {
-    const res = await axios.get("http://localhost:5000/api/tasks", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setTasks(res.data);
+    try {
+      const res = await axios.get(`${API}/api/tasks`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(res.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
   };
 
   const updateStatus = async (id, status) => {
-    await axios.put(
-      `http://localhost:5000/api/tasks/${id}`,
-      { status },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    fetchTasks();
+    try {
+      await axios.put(
+        `${API}/api/tasks/${id}`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      fetchTasks();
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
   };
 
   const total = tasks.length;
@@ -35,39 +46,67 @@ function EmployeeDashboard() {
   return (
     <>
       <Navbar />
-      <div className="container"></div>
-    
-      <div style={{ padding: "20px" }}>
+      <div className="container">
+
         <h1>Employee Dashboard</h1>
 
-        <h3>My Stats</h3>
-        <p>Total: {total}</p>
-        <p>Completed: {completed}</p>
-        <p>Pending: {pending}</p>
+        <div className="card">
+          <h3>My Stats</h3>
+          <p>Total: {total}</p>
+          <p>Completed: {completed}</p>
+          <p>Pending: {pending}</p>
+        </div>
 
-        <hr />
-
-        {tasks.length === 0 && <p>No tasks assigned.</p>}
+        {tasks.length === 0 && (
+          <div className="card">
+            <p>No tasks assigned.</p>
+          </div>
+        )}
 
         {tasks.map(task => (
-          <div key={task._id} style={{border:"1px solid gray", padding:"10px", margin:"10px 0"}}>
+          <div key={task._id} className="card">
             <h4>{task.title}</h4>
             <p>{task.description}</p>
-            <p>Priority: {task.priority}</p>
-            <p>Status: {task.status}</p>
+
+            <span className={`badge badge-${task.priority.toLowerCase()}`}>
+              {task.priority}
+            </span>
+
+            <br /><br />
+
+            <span className={`badge ${
+              task.status === "Completed"
+                ? "badge-completed"
+                : task.status === "In Progress"
+                ? "badge-progress"
+                : "badge-pending"
+            }`}>
+              {task.status}
+            </span>
+
+            <br /><br />
 
             {task.status !== "Completed" && (
               <>
-                <button onClick={() => updateStatus(task._id, "In Progress")}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => updateStatus(task._id, "In Progress")}
+                >
                   In Progress
                 </button>
-                <button onClick={() => updateStatus(task._id, "Completed")}>
+
+                <button
+                  className="btn btn-success"
+                  onClick={() => updateStatus(task._id, "Completed")}
+                  style={{ marginLeft: "10px" }}
+                >
                   Complete
                 </button>
               </>
             )}
           </div>
         ))}
+
       </div>
     </>
   );
